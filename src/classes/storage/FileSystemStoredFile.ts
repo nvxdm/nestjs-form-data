@@ -14,7 +14,10 @@ export class FileSystemStoredFile extends StoredFile {
 
   static async create(busboyFileMeta: ParticleStoredFile, stream: ReadableStream, config: FormDataInterceptorConfig): Promise<FileSystemStoredFile> {
     await mkdirp.native(config.fileSystemStoragePath);
-    const filePath = path.resolve(config.fileSystemStoragePath, FileSystemStoredFile.makeFileNameWithSalt(busboyFileMeta.originalName));
+    const filename = config.filename
+      ? config.filename(busboyFileMeta.originalName)
+      : FileSystemStoredFile.makeFileNameWithSalt(busboyFileMeta.originalName);
+    const filePath = path.resolve(config.fileSystemStoragePath, filename);
 
     return new Promise<FileSystemStoredFile>((res, rej) => {
       const outStream = fs.createWriteStream(filePath);
@@ -23,7 +26,7 @@ export class FileSystemStoredFile extends StoredFile {
       outStream.on('error', rej);
       outStream.on('finish', () => {
         const file: FileSystemStoredFile = plainToClass(FileSystemStoredFile, {
-          originalName: busboyFileMeta.originalName,
+          originalName: filename,
           encoding: busboyFileMeta.encoding,
           busBoyMimeType: busboyFileMeta.mimetype,
           path: filePath,
