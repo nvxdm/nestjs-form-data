@@ -45,6 +45,16 @@ export interface FormDataInterceptorConfig {
    * Only for sync configuration
    */
   isGlobal?: boolean;
+
+  /**
+   * Callback function to customize the uploaded file's name.
+   * This function receives the original file name as a parameter
+   * and should return the new file name.
+   *
+   * @param originalName - The original name of the uploaded file
+   * @returns The new file name
+   */
+  filename?: (originalName: string) => string;
 }
 
 

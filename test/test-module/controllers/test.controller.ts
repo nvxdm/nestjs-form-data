@@ -11,14 +11,15 @@ import { CustomErrorSingleDto } from '../dto/CustomErrorSingle.dto';
 import { CustomErrorArrayDto } from '../dto/CustomErrorArray.dto';
 import { UploadOptionalExposedFieldSingleFileDto } from '../dto/UploadOptionalExposedFieldSingleFile.dto';
 import { UploadOptionalExposedFieldArrayFileDto } from '../dto/UploadOptionalExposedFieldArrayFile.dto';
+import { UploadSingleFileWithCustomNameDto } from '../dto/UploadSingleFileWithCustomName.dto';
 
 @Controller('')
 export class TestController {
 
 
   @Post('single-file')
-  @UsePipes(new ValidationPipe({transform: true}))
-  @FormDataRequest({autoDeleteFile: true})
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @FormDataRequest({ autoDeleteFile: true })
   @HttpCode(HttpStatus.OK)
   uploadSingleFile(@Body() singleFileDto: UploadSingleFileDto) {
     return {
@@ -28,7 +29,7 @@ export class TestController {
   }
 
   @Post('array-files')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   uploadArrayFiles(@Body() arrayFilesDto: UploadArrayFilesDto) {
@@ -41,7 +42,7 @@ export class TestController {
   }
 
   @Post('auto-delete-single-file')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest({ storage: FileSystemStoredFile })
   @HttpCode(HttpStatus.OK)
   uploadSingleWithAutoDeleteFile(@Body() singleFileDto: UploadSingleFileFSStorageDto) {
@@ -53,7 +54,7 @@ export class TestController {
   }
 
   @Post('auto-delete-single-file-busboy')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest({ storage: FileSystemStoredFile, limits: { fileSize: 5 } })
   @HttpCode(HttpStatus.OK)
   uploadSingleWithAutoDeleteFileBusboySizeLimit(@Body() singleFileDto: UploadSingleFileFSStorageDto) {
@@ -66,7 +67,7 @@ export class TestController {
 
 
   @Post('ext-validator')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   extMagicNumValidator(@Body() dto: ExtValidatorDto) {
@@ -80,7 +81,7 @@ export class TestController {
   }
 
   @Post('mime-validator')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   mimeTypeValidator(@Body() dto: MimeTypeValidatorDto) {
@@ -94,7 +95,7 @@ export class TestController {
   }
 
   @Post('optional')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   optionalFile(@Body() dto: UploadOptionalFileDto) {
@@ -102,7 +103,7 @@ export class TestController {
   }
 
   @Post('optional-exposed-single')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   optionalExposedFieldSingleFile(@Body() dto: UploadOptionalExposedFieldSingleFileDto) {
@@ -110,7 +111,7 @@ export class TestController {
   }
 
   @Post('optional-exposed-array')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   optionalExposedFieldArrayFiles(@Body() dto: UploadOptionalExposedFieldArrayFileDto) {
@@ -118,22 +119,37 @@ export class TestController {
   }
 
   @Post('custom-error-single')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   customErrorSingle(@Body() dto: CustomErrorSingleDto) {
     const file: MemoryStoredFile = dto.file;
     return {
-      filename: file.originalName
+      filename: file.originalName,
     };
   }
 
   @Post('custom-error-array')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @FormDataRequest()
   @HttpCode(HttpStatus.OK)
   customErrorArray(@Body() dto: CustomErrorArrayDto) {
-    return dto.files.map( f => ({filename: f.originalName}));
+    return dto.files.map(f => ({ filename: f.originalName }));
+  }
+
+
+  @Post('custom-file-name')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @FormDataRequest({
+    storage: FileSystemStoredFile,
+    filename: (originalName: string) => `custom-${originalName}`,
+  })
+  @HttpCode(HttpStatus.OK)
+  uploadSingleFileWithCustomName(@Body() uploadSingleFileWithCustomNameDto: UploadSingleFileWithCustomNameDto) {
+    return {
+      filename: uploadSingleFileWithCustomNameDto.file.originalName,
+      mimetype: uploadSingleFileWithCustomNameDto.file.mimetype,
+    };
   }
 
 }
