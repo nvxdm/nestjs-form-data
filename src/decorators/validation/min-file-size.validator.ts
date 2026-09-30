@@ -19,7 +19,7 @@ export function MinFileSize(minSizeBytes: number, validationOptions?: Validation
       },
 
       defaultMessage(validationArguments?: ValidationArguments): string {
-        return `Maximum file size is ${validationArguments.constraints[0]}`;
+        return `Minimum file size is ${validationArguments.constraints[0]}`;
       },
     },
   }, validationOptions);
