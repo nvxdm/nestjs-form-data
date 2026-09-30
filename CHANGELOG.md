@@ -1,3 +1,6 @@
+## Unreleased
+- Merged PR [Bump class-validator to the latest version](https://github.com/nvxdm/nestjs-form-data/pull/72) — added `class-validator` `^0.15.1` to peer dependencies (`0.15.0` was never published to npm) and bumped the dev dependency
+
 ## v11.0.1
 - **FIX**: Fixed race condition where file cleanup was not awaited before sending response — `deleteFiles()` is now properly awaited in both success and error paths (`src/interceptors/FormData.interceptor.ts`)
 - **FEATURE**: Added `awaitCleanup` configuration option (default: `true`). When `true`, the response waits for file cleanup to complete. Set to `false` for fire-and-forget cleanup and faster response times.
