@@ -1,8 +1,14 @@
 import { ParticleStoredFile } from '../../interfaces/ParticleStoredFile';
 import { FormDataInterceptorConfig, MetaFieldSource, MetaSource } from '../../interfaces';
 import { Readable as ReadableStream } from 'stream';
-import { FileTypeResult } from 'file-type/core';
 import path from 'path';
+
+// `file-type` only exposes its types via a package.json "exports" map, which the
+// project's classic Node module resolution cannot follow. Mirror the shape locally.
+export type FileTypeResult = {
+  readonly ext: string;
+  readonly mime: string;
+};
 
 export abstract class StoredFile implements ParticleStoredFile {
   encoding: string;

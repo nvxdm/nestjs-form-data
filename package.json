@@ -12,7 +12,7 @@
     "build": "rimraf dist && tsc",
     "build:watch": "rimraf dist && tsc --watch",
     "prepublish": "npm run test:e2e && npm run build",
-    "test:e2e": "jest --config test/jest-e2e.json"
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest --config test/jest-e2e.json"
   },
   "author": "dmitriy-nz",
   "license": "MIT",
@@ -55,10 +55,10 @@
   "dependencies": {
     "busboy": "^1.6.0",
     "concat-stream": "^2.0.0",
-    "file-type": "^16.5.4",
-    "mkdirp": "^1.0.4",
-    "type-is": "^1.6.18",
-    "uid": "^2.0.0"
+    "file-type": "^22.0.1",
+    "mkdirp": "^3.0.1",
+    "type-is": "^2.1.0",
+    "uid": "^2.0.2"
   },
   "keywords": [
     "form data",

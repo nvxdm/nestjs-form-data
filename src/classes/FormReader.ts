@@ -2,9 +2,16 @@ import { FormDataInterceptorConfig } from '../interfaces';
 import busboy from 'busboy';
 import appendField from '../libs/node-append-field';
 import { BadRequestException } from '@nestjs/common';
-import { StoredFile } from './storage';
-import FileType from 'file-type';
+import { StoredFile, FileTypeResult } from './storage';
 import { Readable as ReadableStream } from 'stream';
+
+type FileTypeModule = {
+  fileTypeStream(webStream: any, options?: any): Promise<any>;
+};
+
+// `file-type` is a pure ESM package; a static/dynamic import compiled to CommonJS
+// would downlevel to `require()`, which cannot load it. Force a native `import()`.
+const importFileType = new Function('return import("file-type")') as () => Promise<FileTypeModule>;
 
 export class FormReader {
   protected busboy: any;
@@ -107,7 +114,13 @@ export class FormReader {
   }
 
   private async loadFile(originalName: string, encoding: string, mimetype: string, stream: ReadableStream): Promise<StoredFile> {
-    const streamWithFileType = await FileType.stream(stream);
+    const { fileTypeStream } = await importFileType();
+    // Cast to `any`: @types/node here predates the Readable.toWeb/fromWeb typings.
+    const nodeStreamApi = ReadableStream as any;
+    const detectedWebStream = await fileTypeStream(nodeStreamApi.toWeb(stream));
+    const streamWithFileType = nodeStreamApi.fromWeb(detectedWebStream) as ReadableStream & { fileType?: any };
+    streamWithFileType.fileType = detectedWebStream.fileType;
+
     const storedFile = await (this.config['storage'] as any).create({
       originalName,
       encoding,

@@ -1,5 +1,5 @@
 import { StoredFile } from './StoredFile';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import path, { ParsedPath } from 'path';
 import * as fs from 'fs';
 import { FormDataInterceptorConfig } from '../../interfaces/FormDataInterceptorConfig';
